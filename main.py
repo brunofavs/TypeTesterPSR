@@ -35,7 +35,33 @@ def modoCount(threshold):
         print('The test will start in '+ str(4-i) +' seconds.')
         time.sleep(1)
     
-    #for i in range(1,)
+    print('')
+    
+    inputs=[]
+    
+    #? Should we store typed letter/shown letter as ASCII code or Unicode?
+    #! Right now its returning as ASCII codes
+    # TODO Add colorama here
+
+    for i in range(1,threshold+1):
+        correct_leter = random.randint(97,122)  # ASCII code
+        time_b4 = time.time()
+        print("Type letter " + chr(correct_leter))
+        typed_letter = ord(readchar.readchar()) #readchar returns a string/char, and ord() converts it to ASCII 
+        time_after = time.time()
+        print('     You typed letter ' + chr(typed_letter))
+        duration = time_after - time_b4
+        
+        # Here all the parameters are computed, now need to store them
+        input=input_tuple(l_s = correct_leter,l_t = typed_letter, t = duration)
+        # Now the tuple resulting from a single keypress should be stored to later be returned
+        inputs.append(input)
+    # print(inputs)
+
+    return inputs
+
+    
+
     
 
 
@@ -49,6 +75,7 @@ def modoTimed(threshold):
         print('The test will start in '+ str(4-i) +' seconds.')
         time.sleep(1)
 
+    print('')
     # TODO Yet to implement
     # return timed_inputs
 
