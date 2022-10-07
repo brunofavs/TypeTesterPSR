@@ -28,6 +28,7 @@ def modoCount(threshold):
     print('The test will begin shortly, ending after pressing ' + str(threshold) + ' letters.')
     print('Press any key to begin the test!')
     getch.getch() # See line 13
+    #_ = readchar.readchar()
     
     # After pressing a key, theres a 3 second countdown before the test starts for the user to prepare.
     for i in range(1,4):
@@ -41,7 +42,7 @@ def modoCount(threshold):
 def modoTimed(threshold):
     print('The test will begin shortly, ending after ' + str(threshold) + ' seconds.')
     print('Press any key to begin the test')
-    getch.getch() # See line 13
+    getch.getch() # See line 13 
 
     # After pressing a key, theres a 3 second countdown before the test starts for the user to prepare.
     for i in range(1,4):
