@@ -31,25 +31,11 @@ def modoCount(threshold):
     
     # After pressing a key, theres a 3 second countdown before the test starts for the user to prepare.
     for i in range(1,4):
-        print('The test will start in '+ i +' seconds.')
+        print('The test will start in '+ str(4-i) +' seconds.')
         time.sleep(1)
     
-    for i in range(1,)
+    #for i in range(1,)
     
-   
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 def modoTimed(threshold):
@@ -59,7 +45,7 @@ def modoTimed(threshold):
 
     # After pressing a key, theres a 3 second countdown before the test starts for the user to prepare.
     for i in range(1,4):
-        print('The test will start in '+ i +' seconds.')
+        print('The test will start in '+ str(4-i) +' seconds.')
         time.sleep(1)
 
     # TODO Yet to implement
