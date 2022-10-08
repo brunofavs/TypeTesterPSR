@@ -7,12 +7,11 @@
 
 # Imports
 
+
+import pprint # Allows for pretty printing of dictionaries
 import argparse
-from asyncio import wait_for
-from concurrent.futures import wait
 import random
 from collections import namedtuple
-import sys
 import readchar
 import getch #alternative to input() which doesn't require the enter key stroke
 import time
@@ -37,8 +36,37 @@ def modoCount(threshold):
     for i in range(1,4):
         print('The test will start in '+ str(4-i) +' seconds.')
         time.sleep(1)
+        
+    print('')
     
-    #for i in range(1,)
+    inputs=[]
+    
+    #? Should we store typed letter/shown letter as ASCII code or Unicode?
+    #! Right now its returning as ASCII codes
+    # TODO Add colorama here
+
+    time_b4_exec=time.time()
+
+    for i in range(1,threshold+1):
+        correct_leter = random.randint(97,122)  # ASCII code
+        time_b4 = time.time()
+        print("Type letter " + chr(correct_leter))
+        typed_letter = ord(readchar.readchar()) #readchar returns a string/char, and ord() converts it to ASCII 
+        time_after = time.time()
+        print('     You typed letter ' + chr(typed_letter))
+        duration = time_after - time_b4
+        
+        # Here all the parameters are computed, now need to store them
+        input=input_tuple(l_s = correct_leter,l_t = typed_letter, t = duration)
+        # Now the tuple resulting from a single keypress should be stored to later be returned
+        inputs.append(input)
+        
+    # print(inputs)
+
+    return inputs, time_b4_exec
+
+    
+
     
 
 
@@ -53,7 +81,6 @@ def modoTimed(threshold):
     for i in range(1,4):
         print('The test will start in '+ str(4-i) +' seconds.')
         time.sleep(1)
-
 
     time_b4 = time.time()                               #Stores the time when the test was started
     timing = 0                                          #Define value 0 to the variable that is going to be used during the while cycle
@@ -87,10 +114,63 @@ def modoTimed(threshold):
     # TODO Yet to implement
     # return timed_inputs
 
-def buildDict(inputs):
-    pass
 
-    # return {accuracy:blablalba}
+
+def buildDict(inputs, abs_b4_time):  # inputs = list of namedTuples
+    dict_keys = ['n_hits','n_types','accuracy','test_duration','test_start','test_start','type_avg_dur','hit_avg_dur','miss_avg_dur','types']
+    stat_dict = dict.fromkeys(dict_keys,0) # keys = list , values = 0
+    #! Any namedTuple can be accessed either by x[1] or x.argument
+    total_hit_time = 0
+    total_miss_time = 0
+    n_misses = 0
+    
+    for i in range(0,len(inputs)): #len() returns nº of elements of the list, which index starts at 0
+        #//current_tuple = inputs[i]
+        #* Number of hits
+        if inputs[i].l_t == inputs[i].l_s:
+            stat_dict['n_hits'] += 1
+            #* Total hit time, yet to be divided by the number of hits
+            total_hit_time += inputs[i].t
+        else:
+            total_miss_time += inputs[i].t
+            #Number of misses - *only used in mid calculations*
+            n_misses += 1
+ 
+        #* Test duration
+        stat_dict['test_duration'] += inputs[i].t
+
+
+
+    #* Number of types
+    stat_dict['n_types'] = len(inputs)
+
+    #* Accuracy
+    stat_dict['accuracy'] = stat_dict['n_hits'] / stat_dict['n_types']
+
+    #* Test start
+    stat_dict['test_start'] = time.ctime(abs_b4_time)
+
+    #* Test end
+    stat_dict['test_end'] = time.ctime(abs_b4_time + stat_dict['test_duration'])
+
+    #* Average type time 
+    # The test time won't ever be 0 seconds, so there ain't a problem by dividing by the time
+    avg_type_time = stat_dict['test_duration'] / len(inputs) #!Trick to assure only 3 decimal points
+    stat_dict['type_avg_dur'] = str(avg_type_time) + 's'
+
+    print(len(inputs))
+    #* Average miss time
+    miss_avg_time = total_miss_time / n_misses  
+    stat_dict['miss_avg_dur'] = str(miss_avg_time) + 's'
+        
+    #* Average hit time
+    hit_avg_time = total_hit_time / stat_dict['n_hits']
+    stat_dict['hit_avg_dur'] = str(hit_avg_time) + 's'
+
+    #* Types
+    stat_dict['types'] = inputs
+    return stat_dict
+
 
 
 #Main
@@ -99,20 +179,26 @@ def main():
     
     parser = argparse.ArgumentParser(description='Script for testing typing speed and accuracy') 
     parser.add_argument('-utm','--use_time_mode', action='store_true',default = False ,help='Use timed mode : tests up to max_value seconds.\n Otherwise tests up to max_value letters')
+
     parser.add_argument('-mv','--max_value',type=int,required=True,help='Number of seconds/letters of the test') 
     args = parser.parse_args()
 
     inputs = [] #* This will be the list of namedTuples that the function buildDict will use to build the statistics dictionary
     my_dict = {}
 
-    if args.use_time_mode == True:
-        inputs = modoTimed(args.max_value)
+
+    #//time_b4_exec = time.time() # In order to build the dictionary the buildDict should receive a absolute time as well.
+    # The line above would be wrong because it wouldn't take into consideration the time for the user to start nor the countdown
+
+    if args.utm == True:
+        inputs ,time_b4_exec = modoTimed(args.max_value)
     else:
-        inputs = modoCount(args.max_value)
+        inputs ,time_b4_exec = modoCount(args.max_value)
         
-    #At this point in the program there should already be the list of namedTuples on which the buildDict function will work with
-    my_dict = buildDict(inputs)
-    print(my_dict) #! --> prints 'none' because buildDict returns void
+    #At this point in the programm there should already be the list of namedTuples on which the buildDict function will work with
+    my_dict = buildDict(inputs,time_b4_exec)
+    pprint.pprint(my_dict)
+
 
 
     
