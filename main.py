@@ -89,6 +89,7 @@ def buildDict(inputs, abs_b4_time):  # inputs = list of namedTuples
     #! Any namedTuple can be accessed either by x[1] or x.argument
     total_hit_time = 0
     total_miss_time = 0
+    n_misses = 0
     
     for i in range(0,len(inputs)): #len() returns nº of elements of the list, which index starts at 0
         #//current_tuple = inputs[i]
@@ -98,13 +99,14 @@ def buildDict(inputs, abs_b4_time):  # inputs = list of namedTuples
             #* Total hit time, yet to be divided by the number of hits
             total_hit_time += inputs[i].t
         else:
-            total_miss_time += inputs[i].t 
+            total_miss_time += inputs[i].t
+            #Number of misses - *only used in mid calculations*
+            n_misses += 1
+ 
         #* Test duration
         stat_dict['test_duration'] += inputs[i].t
 
 
-    #Number of misses - *only used in mid calculations*
-    n_misses = stat_dict['n_types'] - stat_dict['n_hits']
 
     #* Number of types
     stat_dict['n_types'] = len(inputs)
@@ -125,23 +127,12 @@ def buildDict(inputs, abs_b4_time):  # inputs = list of namedTuples
 
     print(len(inputs))
     #* Average miss time
-    #! Here we have to watch out in case total_miss_time = 0
-    if total_miss_time == 0 :
-        miss_avg_time = 0
-        stat_dict['miss_avg_dur'] = str(miss_avg_time) + 's'
-    else:
-        miss_avg_time = total_miss_time / n_misses  
-        stat_dict['miss_avg_dur'] = str(miss_avg_time) + 's'
-
+    miss_avg_time = total_miss_time / n_misses  
+    stat_dict['miss_avg_dur'] = str(miss_avg_time) + 's'
+        
     #* Average hit time
-    #! Here we have to watch out in case total_hit_time = 0
-
-    if total_hit_time == 0:
-        hit_avg_time = 0
-        stat_dict['hit_avg_dur'] = str(hit_avg_time) + 's'
-    else:
-        hit_avg_time = total_hit_time / stat_dict['n_hits']
-        stat_dict['hit_avg_dur'] = str(hit_avg_time) + 's'
+    hit_avg_time = total_hit_time / stat_dict['n_hits']
+    stat_dict['hit_avg_dur'] = str(hit_avg_time) + 's'
 
     #* Types
     stat_dict['types'] = inputs
