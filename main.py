@@ -26,13 +26,13 @@ input_tuple=namedtuple('input_tuple',['l_s','l_t','t']) # letter_shown,letter_ty
 #Functions
 
 def modoCount(threshold):
-    print('The test will begin shortly, ending after pressing ' + str(threshold) + ' letters.')
-    print('Press any key to begin the test!')
+    print('The test will begin shortly, ending after pressing ' + Fore.LIGHTCYAN_EX + Style.BRIGHT + str(threshold) + ' letters.')
+    print(Style.BRIGHT + Fore.LIGHTYELLOW_EX + 'Press any key to begin the test!\n')
     _ = readchar.readchar()
 
     # After pressing a key, theres a 3 second countdown before the test starts for the user to prepare.
     for i in range(1,4):
-        print(Style.BRIGHT + 'The test will start in '+ str(4-i) +' seconds.\n')
+        print(Fore.CYAN + Style.BRIGHT + 'The test will start in '+ str(4-i) +' seconds.\n')
         time.sleep(1)
         
     
@@ -48,7 +48,7 @@ def modoCount(threshold):
     for i in range(1,threshold+1):
         correct_leter = chr(random.randint(97,122))  # ASCII code
         time_b4 = time.time()
-        print("Type letter " + correct_leter)
+        print("Type letter " + Style.BRIGHT + Fore.LIGHTBLUE_EX + correct_leter)
         typed_letter = readchar.readchar() #readchar returns a string/char, and ord() converts it to ASCII 
 
         #! Its important that this if statement is before appending the result to the output
@@ -58,7 +58,11 @@ def modoCount(threshold):
             break
 
         time_after = time.time()
-        print('     You typed letter ' + typed_letter)
+        if typed_letter == correct_leter:
+            print(Back.GREEN + "     You typed " + typed_letter,'\n')
+        else:
+            print(Back.RED + "     You typed " + typed_letter,'\n')
+        #print('     You typed letter ' + typed_letter)
         duration = time_after - time_b4
         # Here all the parameters are computed, now need to store them
         input=input_tuple(l_s = correct_leter,l_t = typed_letter, t = duration)
@@ -67,9 +71,9 @@ def modoCount(threshold):
         inputs.append(input)
 
     if not test_interrupt:
-        print('\nTest is finished!\n')
+        print(Fore.MAGENTA + Style.BRIGHT + '\nTest is finished!\n')
     else:
-        print('\nTest interrupted!\n')
+        print(Fore.YELLOW + Style.BRIGHT + '\nTest interrupted!\n')
 
     return inputs, time_b4_exec
 
@@ -77,14 +81,14 @@ def modoCount(threshold):
 
 def modoTimed(threshold):
 
-    print('The test will begin shortly, ending after ' + str(threshold) + ' seconds.')
-    print('Press any key to begin the test')
+    print('The test will begin shortly, ending after ' + Fore.LIGHTCYAN_EX + Style.BRIGHT + str(threshold) + ' seconds.')
+    print(Style.BRIGHT + Fore.LIGHTYELLOW_EX + 'Press any key to begin the test!\n')
     _ = readchar.readchar()
     timed_inputs = []
 
     # After pressing a key, there's a 3 second countdown before the test starts for the user to prepare.
     for i in range(1,4):
-        print(Style.BRIGHT + 'The test will start in '+ str(4-i) +' seconds.\n')
+        print(Style.BRIGHT + Fore.CYAN + 'The test will start in '+ str(4-i) +' seconds.\n')
         time.sleep(1)
 
     time_b4_exec = time.time()                               #Stores the time when the test was started
@@ -95,29 +99,36 @@ def modoTimed(threshold):
     while timing < float(threshold):
 
         correct_letter = chr(random.randint(97,122))         #Generates a random letter
-        print('Type letter ' + correct_letter)  #Prints the generated letter
-        time_b4_chr = time.time()                       #Gets the time before the input
+        print('Type letter ' + Fore.LIGHTBLUE_EX + Style.BRIGHT + correct_letter)  #Prints the generated letter
+        time_b4_chr = time.time()                      #Gets the time before the input
 
-        typed_letter = readchar.readkey()               #Reads the input letter
-
+        typed_letter = readchar.readkey()              #Reads the input letter
+        
         #! Its important that this if statement is before appending the result to the output
         if  typed_letter == chr(32):                    #Clicking on the space bar 
             time_after = time.time()                    #End date of the text
             test_interrupt = True
             break
 
+        if typed_letter == correct_letter:
+            print(Back.GREEN + "     You typed " + typed_letter,'\n')
+        else:
+            print(Back.RED + "     You typed " + typed_letter,'\n')
+
+
         time_after = time.time()                        #Gets the time after the input 
         reaction_time = time_after - time_b4_chr        #Reaction time
         timing = time_after - time_b4_exec                   #Elapsed time
-        print("You typed" , typed_letter , '\n')           #Prints the typed letter
+        #print("You typed" , typed_letter , '\n')           #Prints the typed letter
         input=input_tuple(l_s = correct_letter,l_t = typed_letter,t = reaction_time ) #Stores the information from the test
         timed_inputs.append(input)
-    
+        dif = timing - threshold
+
 
     if not test_interrupt:
-        print('\nTest is finished!\n')
+        print(Fore.MAGENTA + Style.BRIGHT + 'Test is finished! You exceeded the maximum test duration (' + str(threshold) + ' sec) by ' + str(round(dif,2)) + ' seconds\n')
     else:
-        print('\nTest interrupted!\n')
+        print(Fore.YELLOW + Style.BRIGHT + '\nTest interrupted!\n')
 
     return(timed_inputs, time_b4_exec)
 
@@ -125,7 +136,7 @@ def modoTimed(threshold):
 
 
 def buildDict(inputs, abs_b4_time):  # inputs = list of namedTuples
-    dict_keys = ['n_hits','n_types','accuracy','test_duration','test_start','test_start','type_avg_dur','hit_avg_dur','miss_avg_dur','types']
+    dict_keys = ['n_hits','n_types','accuracy','test_duration','test_start','test_end','type_avg_dur','hit_avg_dur','miss_avg_dur','types']
     stat_dict = dict.fromkeys(dict_keys,0) # keys = list , values = 0
     #! Any namedTuple can be accessed either by x[1] or x.argument
     total_hit_time = 0
@@ -171,7 +182,7 @@ def buildDict(inputs, abs_b4_time):  # inputs = list of namedTuples
     else:
         avg_type_time = stat_dict['test_duration'] / len(inputs) #!Trick to assure only 3 decimal points
     
-    stat_dict['type_avg_dur'] = str(avg_type_time) + 's'
+    stat_dict['type_avg_dur'] = avg_type_time
 
     #* Average miss time
     if n_misses == 0:
@@ -220,7 +231,8 @@ def main():
         
     #At this point in the programm there should already be the list of namedTuples on which the buildDict function will work with
     my_dict = buildDict(inputs,time_b4_exec)
-    pprint.pprint(my_dict)
+    print(Fore.GREEN + 'Your test statistics are:','\n')
+    pprint.pprint(my_dict,sort_dicts=False)
 
 
 
