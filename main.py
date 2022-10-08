@@ -43,6 +43,7 @@ def modoCount(threshold):
     # TODO Add colorama here
 
     time_b4_exec=time.time()
+    test_interrupt = False
 
     for i in range(1,threshold+1):
         correct_leter = chr(random.randint(97,122))  # ASCII code
@@ -151,7 +152,10 @@ def buildDict(inputs, abs_b4_time):  # inputs = list of namedTuples
     stat_dict['n_types'] = len(inputs)
 
     #* Accuracy
-    stat_dict['accuracy'] = stat_dict['n_hits'] / stat_dict['n_types']
+    if stat_dict['n_types'] == 0 :
+        stat_dict['accuracy'] = 0
+    else:
+        stat_dict['accuracy'] = stat_dict['n_hits'] / stat_dict['n_types']
 
     #* Test start
     stat_dict['test_start'] = time.ctime(abs_b4_time)
@@ -161,7 +165,11 @@ def buildDict(inputs, abs_b4_time):  # inputs = list of namedTuples
 
     #* Average type time 
     # The test time won't ever be 0 seconds, so there ain't a problem by dividing by the time
-    avg_type_time = stat_dict['test_duration'] / len(inputs) #!Trick to assure only 3 decimal points
+    if len(inputs) == 0:
+        avg_type_time = 0
+    else:
+        avg_type_time = stat_dict['test_duration'] / len(inputs) #!Trick to assure only 3 decimal points
+    
     stat_dict['type_avg_dur'] = str(avg_type_time) + 's'
 
     #* Average miss time
