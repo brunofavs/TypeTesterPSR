@@ -88,7 +88,8 @@ def modoTimed(threshold):
         time.sleep(1)
 
     time_b4_exec = time.time()                               #Stores the time when the test was started
-    timing = 0                                          #Define value 0 to the variable that is going to be used during the while cycle
+    timing = 0
+    test_interrupt = False                                          #Define value 0 to the variable that is going to be used during the while cycle
 
     #The function will run until the duration limit is reached
     while timing < float(threshold):
