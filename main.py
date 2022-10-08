@@ -32,7 +32,7 @@ def modoCount(threshold):
 
     # After pressing a key, theres a 3 second countdown before the test starts for the user to prepare.
     for i in range(1,4):
-        print('The test will start in '+ str(4-i) +' seconds.\n')
+        print(Style.BRIGHT + 'The test will start in '+ str(4-i) +' seconds.\n')
         time.sleep(1)
         
     
@@ -84,7 +84,7 @@ def modoTimed(threshold):
 
     # After pressing a key, there's a 3 second countdown before the test starts for the user to prepare.
     for i in range(1,4):
-        print('The test will start in '+ str(4-i) +' seconds.')
+        print(Style.BRIGHT + 'The test will start in '+ str(4-i) +' seconds.\n')
         time.sleep(1)
 
     time_b4_exec = time.time()                               #Stores the time when the test was started
