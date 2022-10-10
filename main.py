@@ -113,7 +113,7 @@ def modoTimed(threshold):
         if typed_letter == correct_letter:
             print(Back.GREEN + "     You typed " + typed_letter,'\n')
         else:
-            print(Back.RED + "     You typed " + typed_letter,'\n')
+            print(Back.RED + "     You typed " + typed_letter , '\n')
 
 
         time_after = time.time()                        #Gets the time after the input 
