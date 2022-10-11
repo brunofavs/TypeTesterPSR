@@ -50,38 +50,35 @@ def modoCount(threshold,mixed_mode):
 
     for i in range(1,threshold+1):
         if mixed_mode == False:
-            correct_leter = chr(random.randint(97,122))#Generates a random letter 
-            print('Type letter ' + Fore.LIGHTBLUE_EX + Style.BRIGHT + correct_leter)      
+            correct_key = chr(random.randint(97,122))#Generates a random letter 
+            print('Type letter ' + Fore.LIGHTBLUE_EX + Style.BRIGHT + correct_key)      
         else :
-            #TODO NOT RANDOM 50% nmr, a choice devia ser da lista de [48,57] U [97,122]
-            letter = random.randint(97,122)#Generates a random letter
-            number = random.randint(48,57)#Generates a random number
-            list=[letter,number]
-            correct_leter = chr(random.choice(list)) #Chooses randomly between letter or number
-            print('Type number ' + Fore.LIGHTBLUE_EX + Style.BRIGHT + correct_leter)  #Prints the generated letter
+            n_l_list = list(range(48,58)) + list(range(97,123))
+            correct_key = chr(random.choice(n_l_list)) #Chooses randomly between letter or number
+            print('Type number ' + Fore.LIGHTBLUE_EX + Style.BRIGHT + correct_key)  #Prints the generated letter
                           #Gets the time before the input
 
        
         time_b4 = time.time()
-        typed_letter = readchar.readchar() #readchar returns a string/char, and ord() converts it to ASCII 
+        typed_key = readchar.readchar() #readchar returns a string/char, and ord() converts it to ASCII 
 
         #! Its important that this if statement is before appending the result to the output
-        if  typed_letter == chr(32):                    #Clicking on the space bar 
+        if  typed_key == chr(32):                    #Clicking on the space bar 
             time_after = time.time()                    #End date of the text
             test_interrupt = True
             break
 
         time_after = time.time()
 
-        if typed_letter == correct_leter:
-            print(Back.GREEN + "\tYou typed " + typed_letter,'\n')
+        if typed_key == correct_key:
+            print(Back.GREEN + "\tYou typed " + typed_key,'\n')
         else:
-            print(Back.RED + "\tYou typed " + typed_letter,'\n')
+            print(Back.RED + "\tYou typed " + typed_key,'\n')
 
         
         duration = time_after - time_b4
         # Here all the parameters are computed, now need to store them
-        input=input_tuple(l_s = correct_leter,l_t = typed_letter, t = duration)
+        input=input_tuple(l_s = correct_key,l_t = typed_key, t = duration)
 
         # Now the tuple resulting from a single keypress should be stored to later be returned
         inputs.append(input)
@@ -97,7 +94,7 @@ def modoCount(threshold,mixed_mode):
 
 
 
-def modoTimed(threshold,numbers):
+def modoTimed(threshold,mixed_mode):
 
     print('The test will begin shortly, ending after ' + Fore.LIGHTCYAN_EX + Style.BRIGHT + str(threshold) + ' seconds.')
     print(Style.BRIGHT + Fore.LIGHTYELLOW_EX + 'Press any key to begin the test!\n')
@@ -115,24 +112,13 @@ def modoTimed(threshold,numbers):
 
     #The function will run until the duration limit is reached
     while timing < float(threshold):
-
-        #? if numbers == False:
-        #?     correct_letter = chr(random.randint(97,122))#Generates a random letter 
-        #?     print('Type letter ' + Fore.LIGHTBLUE_EX + Style.BRIGHT + correct_letter)      
-        #? else :
-        #?     correct_letter = chr(random.randint(48,57))#Generates a random number
-        #?     print('Type number ' + Fore.LIGHTBLUE_EX + Style.BRIGHT + correct_letter)  #Prints the generated letter
-        #? time_b4_chr = time.time()                      #Gets the time before the input
-
-        #? typed_letter = readchar.readkey()              #Reads the input letter
        
-        if numbers == False:
+        if mixed_mode == False:
             correct_letter = chr(random.randint(97,122))#Generates a random letter 
             print('Type letter ' + Fore.LIGHTBLUE_EX + Style.BRIGHT + correct_letter)      
         else :
-            letter = random.randint(97,122)#Generates a random letter
-            number = random.randint(48,57)#Generates a random number
-            list=[letter,number]
+            n_l_list = list(range(48,58)) + list(range(97,123))
+            correct_key = chr(random.choice(n_l_list)) #Chooses randomly between letter or number
             correct_letter = chr(random.choice(list)) #Chooses randomly between letter or number
             print('Type number ' + Fore.LIGHTBLUE_EX + Style.BRIGHT + correct_letter)  #Prints the generated letter
         time_b4_chr = time.time()                      #Gets the time before the input
