@@ -25,8 +25,8 @@ input_tuple=namedtuple('input_tuple',['l_s','l_t','t']) # letter_shown,letter_ty
 
 #Functions
 
-def modoCount(threshold,numbers):
-    if numbers == False:
+def modoCount(threshold,mixed_mode):
+    if mixed_mode == False:
         print('The test will begin shortly, ending after pressing ' + Fore.LIGHTCYAN_EX + Style.BRIGHT + str(threshold) + ' letters.')
     else:
          print('The test will begin shortly, ending after pressing ' + Fore.LIGHTCYAN_EX + Style.BRIGHT + str(threshold) + ' keys.')
@@ -49,10 +49,11 @@ def modoCount(threshold,numbers):
     test_interrupt = False
 
     for i in range(1,threshold+1):
-        if numbers == False:
+        if mixed_mode == False:
             correct_leter = chr(random.randint(97,122))#Generates a random letter 
             print('Type letter ' + Fore.LIGHTBLUE_EX + Style.BRIGHT + correct_leter)      
         else :
+            #TODO NOT RANDOM 50% nmr, a choice devia ser da lista de [48,57] U [97,122]
             letter = random.randint(97,122)#Generates a random letter
             number = random.randint(48,57)#Generates a random number
             list=[letter,number]
@@ -71,17 +72,21 @@ def modoCount(threshold,numbers):
             break
 
         time_after = time.time()
+
         if typed_letter == correct_leter:
             print(Back.GREEN + "\tYou typed " + typed_letter,'\n')
         else:
             print(Back.RED + "\tYou typed " + typed_letter,'\n')
-        #print('     You typed letter ' + typed_letter)
+
+        
         duration = time_after - time_b4
         # Here all the parameters are computed, now need to store them
         input=input_tuple(l_s = correct_leter,l_t = typed_letter, t = duration)
 
         # Now the tuple resulting from a single keypress should be stored to later be returned
         inputs.append(input)
+
+    #* END OF FOR LOOP
 
     if not test_interrupt:
         print(Fore.MAGENTA + Style.BRIGHT + '\nTest is finished!\n')
