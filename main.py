@@ -72,9 +72,9 @@ def modoCount(threshold,numbers):
 
         time_after = time.time()
         if typed_letter == correct_leter:
-            print(Back.GREEN + "     You typed " + typed_letter,'\n')
+            print(Back.GREEN + "\tYou typed " + typed_letter,'\n')
         else:
-            print(Back.RED + "     You typed " + typed_letter,'\n')
+            print(Back.RED + "\tYou typed " + typed_letter,'\n')
         #print('     You typed letter ' + typed_letter)
         duration = time_after - time_b4
         # Here all the parameters are computed, now need to store them
