@@ -14,6 +14,7 @@ import random
 from collections import namedtuple
 import readchar
 import time
+import pick
 
 import colorama
 from colorama import Back, Fore, Style
@@ -26,6 +27,7 @@ input_tuple=namedtuple('input_tuple',['l_s','l_t','t']) # letter_shown,letter_ty
 #Functions
 
 def modoCount(threshold,mixed_mode):
+
     if mixed_mode == False:
         print('The test will begin shortly, ending after pressing ' + Fore.LIGHTCYAN_EX + Style.BRIGHT + str(threshold) + ' letters.')
     else:
@@ -93,8 +95,8 @@ def modoCount(threshold,mixed_mode):
     return inputs, time_b4_exec
 
 
-
 def modoTimed(threshold,mixed_mode):
+
 
     print('The test will begin shortly, ending after ' + Fore.LIGHTCYAN_EX + Style.BRIGHT + str(threshold) + ' seconds.')
     print(Style.BRIGHT + Fore.LIGHTYELLOW_EX + 'Press any key to begin the test!\n')
@@ -114,34 +116,33 @@ def modoTimed(threshold,mixed_mode):
     while timing < float(threshold):
        
         if mixed_mode == False:
-            correct_letter = chr(random.randint(97,122))#Generates a random letter 
-            print('Type letter ' + Fore.LIGHTBLUE_EX + Style.BRIGHT + correct_letter)      
+            correct_key = chr(random.randint(97,122))#Generates a random letter 
+            print('Type letter ' + Fore.LIGHTBLUE_EX + Style.BRIGHT + correct_key)      
         else :
             n_l_list = list(range(48,58)) + list(range(97,123))
             correct_key = chr(random.choice(n_l_list)) #Chooses randomly between letter or number
-            correct_letter = chr(random.choice(list)) #Chooses randomly between letter or number
-            print('Type number ' + Fore.LIGHTBLUE_EX + Style.BRIGHT + correct_letter)  #Prints the generated letter
+            print('Type number ' + Fore.LIGHTBLUE_EX + Style.BRIGHT + correct_key)  #Prints the generated letter
         time_b4_chr = time.time()                      #Gets the time before the input
 
-        typed_letter = readchar.readkey()   
+        typed_key = readchar.readkey()   
 
         #! Its important that this if statement is before appending the result to the output
-        if  typed_letter == chr(32):                    #Clicking on the space bar 
+        if  typed_key == chr(32):                    #Clicking on the space bar 
             time_after = time.time()                    #End date of the text
             test_interrupt = True
             break
 
-        if typed_letter == correct_letter:
-            print(Back.GREEN + "\tYou typed " + typed_letter,'\n')
+        if typed_key == correct_key:
+            print(Back.GREEN + "\tYou typed " + typed_key,'\n')
         else:
-            print(Back.RED + "\tYou typed " + typed_letter , '\n')
+            print(Back.RED + "\tYou typed " + typed_key , '\n')
 
 
         time_after = time.time()                        #Gets the time after the input 
         reaction_time = time_after - time_b4_chr        #Reaction time
         timing = time_after - time_b4_exec                   #Elapsed time
         #print("You typed" , typed_letter , '\n')           #Prints the typed letter
-        input=input_tuple(l_s = correct_letter,l_t = typed_letter,t = reaction_time ) #Stores the information from the test
+        input=input_tuple(l_s = correct_key,l_t = typed_key,t = reaction_time ) #Stores the information from the test
         timed_inputs.append(input)
         dif = timing - threshold
 
@@ -152,8 +153,6 @@ def modoTimed(threshold,mixed_mode):
         print(Fore.YELLOW + Style.BRIGHT + '\nTest interrupted!\n')
 
     return(timed_inputs, time_b4_exec)
-
-
 
 
 def buildDict(inputs, abs_b4_time):  # inputs = list of namedTuples
@@ -236,7 +235,6 @@ def main():
     parser = argparse.ArgumentParser(description='Script for testing typing speed and accuracy') 
     parser.add_argument('-utm','--use_time_mode', action='store_true',default = False ,help='Use timed mode : tests up to max_value seconds.\n Otherwise tests up to max_value letters')
     parser.add_argument('-mv','--max_value',type=int,required=True,help='Number of seconds/letters of the test') 
-    parser.add_argument('-nt','--numbers_too', action='store_true',default = False ,help='Numbers too: gives the option to include numbers in the test.')
     args = parser.parse_args()
     
     inputs = [] #* This will be the list of namedTuples that the function buildDict will use to build the statistics dictionary
@@ -246,21 +244,29 @@ def main():
     #//time_b4_exec = time.time() # In order to build the dictionary the buildDict should receive a absolute time as well.
     # The line above would be wrong because it wouldn't take into consideration the time for the user to start nor the countdown
 
-    if args.use_time_mode == True:
-        inputs ,time_b4_exec = modoTimed(args.max_value,args.numbers_too)
+    # The following lines will prompt the player with a option to choose whether he wants just letters or to add numbers to the mix
+    title_prompt = "Please choose the parameters of your test: "
+    options = ["Letters","Letters + Numbers"]
+    option , index = pick.pick(options, title_prompt,indicator="=>")
+
+    if index == 0:
+        mixed_mode = False
+    elif index == 1:
+        mixed_mode = True
     else:
-        inputs ,time_b4_exec = modoCount(args.max_value,args.numbers_too)
+        return 
+    #--------------------------------------------------------------------------------
+    
+    if args.use_time_mode == True:
+        inputs ,time_b4_exec = modoTimed(args.max_value,mixed_mode)
+    else:
+        inputs ,time_b4_exec = modoCount(args.max_value,mixed_mode)
 
         
     #At this point in the programm there should already be the list of namedTuples on which the buildDict function will work with
     my_dict = buildDict(inputs,time_b4_exec)
     print(Fore.GREEN + 'Your test statistics are:','\n')
     pprint.pprint(my_dict,sort_dicts=False)
-
-
-
-    
-
 
 if __name__=='__main__':
     main()
